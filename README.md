@@ -1,12 +1,14 @@
-# Guandan
+As this work is based on "DanZero: Mastering GuanDan Game with Reinforcement Learning", the code is also built on the repository "https://github.com/AltmanD/guandan_mcc/tree/main".
+
+# guandan-project
 ## Insatll 
 ### lib needs:
 
-linux20.04
+ubuntu 20.04
 
 python=3.8
 
-tensorflow=1.15.5
+tensorflow=2.6.1
 
 numpy=1.18.5
 
@@ -61,4 +63,3 @@ in terminal3
 
 and have fun!
 =======
-# guandan-project
