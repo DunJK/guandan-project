@@ -35,6 +35,7 @@ parser.add_argument('--action_space', type=int, default=(5, 216),
 parser.add_argument('--epsilon', type=float, default=0.01,
                     help='Epsilon')
 
+
 class Player():
     def __init__(self, args) -> None:
         # Set 'allow_growth'
@@ -46,7 +47,7 @@ class Player():
 
         # 数据初始化
         self.mb_states_no_action, self.mb_actions, self.mb_rewards, self.mb_q = [], [], [], []
-        self.all_mb_states_no_action, self.all_mb_actions, self.all_mb_rewards = [], [], []
+        self.all_mb_states_no_action, self.all_mb_actions, self.all_mb_rewards, self.all_mb_q = [], [], [], []
         self.args = args
         self.step = 0
         self.num_set_weight = 0
@@ -54,12 +55,14 @@ class Player():
 
         # 模型初始化
         self.model_id = -1
-        self.model  = GDModel(self.args.observation_space, (5, 216))
+        self.model = GDModel(self.args.observation_space, (5, 216))
 
         # 连接learner
         context = zmq.Context()
         context.linger = 0  # For removing linger behavior
+
         self.socket = context.socket(zmq.REQ)
+
         self.socket.connect(f'tcp://{self.args.ip}:{self.args.data_port}')
 
         # log文件
@@ -84,7 +87,7 @@ class Player():
                 self.model.set_weights(new_weights)
                 self.num_set_weight += 1
                 model_init_flag = 1
-        print('set weight success') 
+        print('set weight success')
 
     def sample(self, state) -> int:
         output = self.model.forward(state['x_batch'])
@@ -99,7 +102,7 @@ class Player():
         self.mb_actions.append(card2array(action))
         self.mb_q.append(q)
         return action_idx
-        
+
     def update_weight(self):
         new_weights, self.model_id = find_new_weights(self.model_id, self.args.ckpt_path)
         if new_weights is not None:
@@ -157,8 +160,7 @@ def run_one_player(index, args):
     # 初始化zmq
     context = zmq.Context()
     socket = context.socket(zmq.REP)
-    socket.bind(f'tcp://*:{6000+index}')
-
+    socket.bind(f'tcp://*:{6000 + index}')
 
     # server bind 和 client connct
 
@@ -169,6 +171,7 @@ def run_one_player(index, args):
         if not isinstance(state, int) and not isinstance(state, float) and not isinstance(state, str):
             action_index = player.sample(state)
             socket.send(serialize(action_index).to_buffer())
+            # print(serialize(action_index).to_buffer())
         elif isinstance(state, str):
             socket.send(b'none')
             if state[0] == 'y':
@@ -176,11 +179,12 @@ def run_one_player(index, args):
             else:
                 player.save_data(-int(state[1]))
             player.send_data(state)
+            #print('sended')
             player.update_weight()
-            #print('updatedweight')
         else:
             socket.send(b'none')
             player.save_data(state)
+            #print("datasaved")
 
 
 def main():
@@ -206,7 +210,8 @@ def main():
         players.append(p)
 
     for player in players:
-        player.join() #主进程等待
+        player.join()  # 主进程等待
+
 
 if __name__ == '__main__':
     main()

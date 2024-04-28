@@ -150,9 +150,11 @@ def recv_data(data_port, mem_pool, receiving_condition, num_receptions, keep_tra
         data_socket.send(b'200')
 
         if keep_training:
+            #print(data)
             mem_pool.push(data)
         else:
             with receiving_condition:
+                #print(data)
                 mem_pool.push(data)
                 num_receptions.value += 1
                 receiving_condition.notify()

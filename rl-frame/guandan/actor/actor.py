@@ -45,7 +45,7 @@ class Player():
 
         # 数据初始化
         self.mb_states_no_action, self.mb_actions, self.mb_rewards, self.mb_q = [], [], [], []
-        self.all_mb_states_no_action, self.all_mb_actions, self.all_mb_rewards = [], [], []
+        self.all_mb_states_no_action, self.all_mb_actions, self.all_mb_rewards, self.all_mb_q = [], [], [], []
         self.args = args
         self.step = 0
         self.num_set_weight = 0
