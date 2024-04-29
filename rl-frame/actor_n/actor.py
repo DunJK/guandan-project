@@ -113,12 +113,13 @@ class Player():
         self.all_mb_states_no_action += self.mb_states_no_action
         self.all_mb_actions += self.mb_actions
         self.all_mb_rewards += self.mb_rewards
-        self.all_mb_q += self.all_mb_q
+        self.all_mb_q += self.mb_q
+
 
         self.mb_states_no_action = []
         self.mb_rewards = []
         self.mb_actions = []
-        self.all_mb_q = []
+        self.mb_q = []
 
     def send_data(self, reward):
         # 调整数据格式并发送
@@ -171,7 +172,6 @@ def run_one_player(index, args):
         if not isinstance(state, int) and not isinstance(state, float) and not isinstance(state, str):
             action_index = player.sample(state)
             socket.send(serialize(action_index).to_buffer())
-            # print(serialize(action_index).to_buffer())
         elif isinstance(state, str):
             socket.send(b'none')
             if state[0] == 'y':
@@ -179,12 +179,12 @@ def run_one_player(index, args):
             else:
                 player.save_data(-int(state[1]))
             player.send_data(state)
-            #print('sended')
             player.update_weight()
         else:
             socket.send(b'none')
             player.save_data(state)
-            #print("datasaved")
+            print('datasavednotall:'+str(player.mb_q))
+            print("datasaved:"+str(player.all_mb_q))
 
 
 def main():

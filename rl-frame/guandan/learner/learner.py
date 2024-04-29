@@ -115,7 +115,7 @@ def main():
                         pickle.dump(weights, f)
             
             if args.keep_training:
-                agent.learn(mem_pool.sample(size=args.batch_size))
+                agent.learn(mem_pool.sample(size=args.batch_size))#有sample出来吗?
             else:
                 with receiving_condition:
                     while num_receptions.value < args.training_freq:
@@ -153,6 +153,7 @@ def recv_data(data_port, mem_pool, receiving_condition, num_receptions, keep_tra
         else:
             with receiving_condition:
                 mem_pool.push(data)
+                #查看真的push进去了吗?
                 num_receptions.value += 1
                 receiving_condition.notify()
 

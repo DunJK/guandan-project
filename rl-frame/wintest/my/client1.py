@@ -19,7 +19,7 @@ parser.add_argument('--ip', type=str, default='127.0.0.1',
                     help='IP address of learner server')
 parser.add_argument('--action_port', type=int, default=6000,
                     help='Learner server port to send training data')
-parser.add_argument('--resfile', type=str, default='res',
+parser.add_argument('--resfile', type=str, default='res.log',
                     help='Learner server port to send training data')
 
 RANK = {
@@ -340,7 +340,7 @@ class ExampleClient(WebSocketClient):
             print('胜局统计', message['victoryNum'])
             print(self.tongji)
             print('------------------对局结束-------------------')
-            with open(f'/home/luyd/guandan/wintest/newvres/{self.args.resfile}', mode='w', encoding='utf-8') as f:
+            with open(f'/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/rl-frame/wintest/my/{self.args.resfile}', mode='w', encoding='utf-8') as f:
                 f.write('胜局统计:'+str(message['victoryNum']) +'\n'+ str(self.tongji))
 
     def get_reward(self, message):

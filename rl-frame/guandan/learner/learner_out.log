@@ -1,0 +1,29 @@
+model build success
+Logging to LEARNER-2024-04-28-15-45-49/log
+Traceback (most recent call last):
+  File "learner.py", line 161, in <module>
+    main()
+  File "learner.py", line 118, in main
+    agent.learn(mem_pool.sample(size=args.batch_size))
+  File "<string>", line 2, in sample
+  File "/usr/lib/python3.8/multiprocessing/managers.py", line 850, in _callmethod
+    raise convert_to_error(kind, result)
+IndexError: deque index out of range
+Process Process-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "learner.py", line 152, in recv_data
+    mem_pool.push(data)
+  File "<string>", line 2, in push
+  File "/usr/lib/python3.8/multiprocessing/managers.py", line 834, in _callmethod
+    conn.send((self._id, methodname, args, kwds))
+  File "/usr/lib/python3.8/multiprocessing/connection.py", line 206, in send
+    self._send_bytes(_ForkingPickler.dumps(obj))
+  File "/usr/lib/python3.8/multiprocessing/connection.py", line 404, in _send_bytes
+    self._send(header)
+  File "/usr/lib/python3.8/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe

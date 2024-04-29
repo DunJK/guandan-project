@@ -17,7 +17,7 @@ from utils.data_trans import (create_experiment_dir, find_new_weights,
 from utils.utils import *
 
 parser = ArgumentParser()
-parser.add_argument('--ip', type=str, default='127.0.0.1',
+parser.add_argument('--ip', type=str, default='172.15.15.2',
                     help='IP address of learner server')
 parser.add_argument('--data_port', type=int, default=5002,
                     help='Learner server port to send training data')
@@ -109,12 +109,12 @@ class Player():
         self.all_mb_states_no_action += self.mb_states_no_action
         self.all_mb_actions += self.mb_actions
         self.all_mb_rewards += self.mb_rewards
-        self.all_mb_q += self.all_mb_q
+        self.all_mb_q += self.mb_q
 
         self.mb_states_no_action = []
         self.mb_rewards = []
         self.mb_actions = []
-        self.all_mb_q = []
+        self.mb_q = []
 
     def send_data(self, reward):
         # 调整数据格式并发送

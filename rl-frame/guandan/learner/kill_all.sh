@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in {3..83}
+for i in {3..8}
 do
-	sshpass ssh root@172.15.15.$i "bash /home/dupeng/guandan/wintest/oldversion/kill.sh"
+	sshpass -p "123456" ssh root@172.15.15.$i "bash /home/dupeng/guandan/actor/kill.sh"
 done

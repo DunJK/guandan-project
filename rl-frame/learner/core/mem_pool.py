@@ -18,6 +18,7 @@ class MemPool:
             self.data = {key: deque(maxlen=capacity) for key in keys}
 
     def push(self, data: Dict[str, np.ndarray]) -> None:
+        print("calling mem push")
         """Push data into memory pool"""
         for key, value in data.items():
             self.data[key].extend(value)
@@ -26,6 +27,7 @@ class MemPool:
             self._keys = list(self.data.keys())
 
     def sample(self, size: int = -1) -> Dict[str, np.ndarray]:
+        print("calling memsample")
         """
         Sample training data from memory pool
         :param size: The number of sample data, default '-1' that indicates all data
@@ -33,13 +35,24 @@ class MemPool:
         """
 
         num = len(self)
+        #print(num)
         indices = list(range(num))
+        #print(indices)
         if 0 < size < num:
             indices = random.sample(indices, size)
+            #print(indices)
 
         result = {}
+        #print(self._keys)
+        #print('noaction:'+str(len(self.data['x_no_action'])))
+        #print('action:'+str(len(self.data['action'])))
+        #print('q:'+str(len(self.data['q'])))
+        #print('reward:'+str(len(self.data['reward'])))
         for key in self._keys:
+            #print(key)
+            #print(self.data[key])
             result[key] = np.stack([self.data[key][idx] for idx in indices])
+            #print(result[key])
         return result
 
     def clear(self) -> None:
@@ -61,12 +74,14 @@ class MultiprocessingMemPool(MemPool):
         self._consuming_data_throughput = None
 
     def push(self, data: Dict[str, np.ndarray]) -> None:
+        print("calling multimem push")
         super().push(data)
 
         if self._receiving_data_throughput is not None:
             self._receiving_data_throughput += len(data[self._keys[0]])
 
     def sample(self, size: int = -1) -> Dict[str, np.ndarray]:
+        print("calling multimem sample")
         data = super().sample(size)
 
         if self._consuming_data_throughput is not None:
