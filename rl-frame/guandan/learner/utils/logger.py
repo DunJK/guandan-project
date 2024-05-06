@@ -161,23 +161,39 @@ class TensorBoardOutputFormat(KVWriter):
         self.tf = tf
         self.event_pb2 = event_pb2
         self.pywrap_tensorflow = pywrap_tensorflow
-        self.writer = _pywrap_events_writer.EventsWriter(compat.as_bytes(path))
+        #self.writer = _pywrap_events_writer.EventsWriter(compat.as_bytes(path))
+        self.writer = tf.summary.create_file_writer(path)
 
+    # def writekvs(self, kvs):
+    #     def summary_val(k, v):
+    #         kwargs = {'tag': k, 'simple_value': float(v)}
+    #         return self.tf.Summary.Value(**kwargs)
+    #
+    #     summary = self.tf.Summary(value=[summary_val(k, v) for k, v in kvs.items()])
+    #     event = self.event_pb2.Event(wall_time=time.time(), summary=summary)
+    #     event.step = self.step  # is there any reason why you'd want to specify the step?
+    #     self.writer.WriteEvent(event)
+    #     self.writer.Flush()
+    #     self.step += 1
     def writekvs(self, kvs):
         def summary_val(k, v):
             kwargs = {'tag': k, 'simple_value': float(v)}
             return self.tf.Summary.Value(**kwargs)
 
-        summary = self.tf.Summary(value=[summary_val(k, v) for k, v in kvs.items()])
-        event = self.event_pb2.Event(wall_time=time.time(), summary=summary)
-        event.step = self.step  # is there any reason why you'd want to specify the step?
-        self.writer.WriteEvent(event)
-        self.writer.Flush()
+        #summary = self.tf.Summary(value=[summary_val(k, v) for k, v in kvs.items()])
+
+        #event = self.event_pb2.Event(wall_time=time.time(), summary=summary)
+        #event.step = self.step  # is there any reason why you'd want to specify the step?
+        #self.writer.WriteEvent(event)
+        for k,v in kvs.items():
+            with self.writer.as_default():
+                self.tf.summary.scalar(k,float(v), step=self.step)
+        self.writer.flush()
         self.step += 1
 
     def close(self):
         if self.writer:
-            self.writer.Close()
+            self.writer.close()
             self.writer = None
 
 

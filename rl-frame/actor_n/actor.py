@@ -115,7 +115,6 @@ class Player():
         self.all_mb_rewards += self.mb_rewards
         self.all_mb_q += self.mb_q
 
-
         self.mb_states_no_action = []
         self.mb_rewards = []
         self.mb_actions = []

@@ -17,7 +17,7 @@ parser.add_argument('--observation_space', type=int, default=(567,),
                     help='The YAML configuration file')
 parser.add_argument('--action_space', type=int, default=(5, 216),
                     help='The YAML configuration file')
-parser.add_argument('--model_id', type=int, default=0,
+parser.add_argument('--model_id', type=int, default=2673,
                     help='The YAML configuration file')
 
 class Player():

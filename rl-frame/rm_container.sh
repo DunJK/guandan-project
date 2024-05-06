@@ -4,7 +4,7 @@
 #	docker rm -f guandan_actor_$i
 #done
 
-for i in {3..8}
+for i in {3..10}
 do
 	docker rm -f guandan_actor_$i
 done

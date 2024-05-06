@@ -32,11 +32,11 @@ parser.add_argument('--data_port', type=int, default=5002, help='Learner server 
 parser.add_argument('--param_port', type=int, default=5001, help='Learner server to publish model parameters')
 parser.add_argument('--model', type=str, default='guandan_model', help='Training model')
 parser.add_argument('--pool_size', type=int, default=65536, help='The max length of data pool')
-parser.add_argument('--batch_size', type=int, default=327, help='The batch size for training')
+parser.add_argument('--batch_size', type=int, default=32768, help='The batch size for training')
 parser.add_argument('--training_freq', type=int, default=250,
                     help='How many receptions of new data are between each training, '
                          'which can be fractional to represent more than one training per reception')
-parser.add_argument('--keep_training', type=bool, default=True,
+parser.add_argument('--keep_training', type=bool, default=False,
                     help="No matter whether new data is received recently, keep training as long as the data is enough "
                          "and ignore `--training_freq`")
 parser.add_argument('--config', type=str, default=None, help='Directory to config file')
