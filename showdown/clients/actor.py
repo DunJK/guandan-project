@@ -35,7 +35,7 @@ class Player():
 
         # 模型初始化
         self.model  = GDModel(args.observation_space, (5, 216))
-        with open('/home/luyd/guandan_mcc/showdown/clients/dan.ckpt', 'rb') as f:
+        with open('dan.ckpt', 'rb') as f:
             new_weights = pickle.load(f)
         self.model.set_weights(new_weights)
     

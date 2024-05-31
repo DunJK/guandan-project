@@ -1,3 +1,4 @@
+import random
 import time
 from collections import defaultdict
 from multiprocessing import Process
@@ -11,12 +12,13 @@ from pygame.locals import *
 class Game:
     def __init__(self) -> None:
         pygame.init()
-        self.font = pygame.font.Font('/home/luyd/guandan_mcc/showdown/fonts/HanYiRegular.ttf', 20)
-        self.cards_image_path = '/home/luyd/guandan_mcc/showdown/images/cards/'
-        self.background_image_path = '/home/luyd/guandan_mcc/showdown/images/background.png'
-        self.partbackground_image_path = '/home/luyd/guandan_mcc/showdown/images/partback.bmp'
-        self.chup_image_path = '/home/luyd/guandan_mcc/showdown/images/chup.png'
-        self.buc_image_path = '/home/luyd/guandan_mcc/showdown/images/buc.png'
+        self.font = pygame.font.Font('/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/fonts/HanYiRegular.ttf', 20)
+        #self.font = pygame.font.SysFont('arial',20)
+        self.cards_image_path = '/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/images/cards/'
+        self.background_image_path = '/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/images/background.png'
+        self.partbackground_image_path = '/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/images/partback.bmp'
+        self.chup_image_path = '/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/images/chup.png'
+        self.buc_image_path = '/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/images/buc.png'
         self.chupImage = pygame.image.load(self.chup_image_path)
         self.bucImage = pygame.image.load(self.buc_image_path)
         self.backgroundImage = pygame.image.load(self.background_image_path)
@@ -29,12 +31,17 @@ class Game:
         self.antiflag = 0
         self.restflag = 0
 
-        waiting_image_path = '/home/luyd/guandan_mcc/showdown/images/waiting.jpg'
+        waiting_image_path = '/Users/dupeng/Desktop/掼蛋AI玩家/guandan_mcc-main/showdown/images/waiting.jpg'
         self.screen = pygame.display.set_mode((self.width, self.height), 0, 32)
+        #print(pygame.display.get_init())
+        #self.screen = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption('guandan_test_gui')
         waitingImage = pygame.image.load(waiting_image_path).convert()
+        #print(waitingImage)
         self.screen.blit(pygame.transform.scale(waitingImage, (self.width, self.height)), (0, 0))  # 画等待
         pygame.display.update()
-    
+        pygame.event.get()
+
     def initInfo(self, message):
         self.texts_positions = [(self.width-120, self.height/2+30), (self.width/2-50, 160), (40, self.height/2+30)]
         self.cards_positions = [(self.width-400, self.height/2-100), (self.width/2-100, 200), (150, self.height/2-100), (self.width/2-100, self.height-500)]
@@ -47,7 +54,7 @@ class Game:
     def recordTribute(self, message):
         self.tributeflag = 1
         self.tributeinfo = message['result'][0]
-        
+
     def recordBack(self, message):
         self.backflag = 1
         self.backinfo = message['result'][0]
@@ -126,8 +133,14 @@ class Game:
             for i, cpos in enumerate(self.cards_positions):
                 if i != 3:
                     self.screen.blit(self.font.render("PASS", True, (0,0,0)), cpos)
+                    # pretent random delay
+                    time.sleep(random.uniform(0.5,1.5))
+                    pygame.display.update()
+
         else:
-            for i, (info, cpos) in enumerate(zip(self.publicInfo, self.cards_positions)):
+            pair = list(zip(self.publicInfo, self.cards_positions))
+            pair = [pair[-1]]+pair[:-1]
+            for i, (info, cpos) in enumerate(pair):
                 # if info['rest'] == 0 and self.restflag == 0:
                 #     for j, poker in enumerate(info['playArea'][2]):
                 #         pokerImage = pygame.image.load(self.cards_image_path + poker + '.jpg').convert_alpha()
@@ -141,9 +154,17 @@ class Game:
                         for j, poker in enumerate(info['playArea'][2]):
                             pokerImage = pygame.image.load(self.cards_image_path + poker + '.jpg').convert_alpha()
                             self.screen.blit(pokerImage, (cpos[0] + j*30, cpos[1]))
+                        # pretent random delay
+                        if i != 0:
+                            time.sleep(random.uniform(0.5,2))
+                        pygame.display.update()
                     else:
-                        if i != 3 and self.publicInfo[0]['rest'] + self.publicInfo[1]['rest'] + self.publicInfo[2]['rest'] != 81:
+                        #if i != 3 and self.publicInfo[0]['rest'] + self.publicInfo[1]['rest'] + self.publicInfo[2]['rest'] != 81:
+                        if i != 0 and self.publicInfo[0]['rest'] + self.publicInfo[1]['rest'] + self.publicInfo[2]['rest'] != 81:
                             self.screen.blit(self.font.render("PASS", True, (0,0,0)), cpos)
+                            # pretent random delay
+                            time.sleep(random.uniform(0.5,1.5))
+                            pygame.display.update()
         pygame.display.update()
 
     def updateInfo(self, message: dict):
@@ -171,7 +192,7 @@ class Game:
             else:
                 tempdict[actions[2]] += 1
             self.legalActions_set.append(tempdict)
-        
+
     def waitInput(self):
         cards_up = []
         cards_down = list(range(len(self.pokerImages)))
@@ -282,6 +303,9 @@ def run_one_player():
                 board.recordBack(message)
             elif message['stage'] == 'anti-tribute':
                 board.recordAntiTribute(message)
+            # elif message['stage'] == 'play':
+            #     time.sleep(random)
+            #     board.updateInfo()
             elif message['stage'] == 'episodeOver':
                 board.showOver(message)
                 time.sleep(5)
@@ -315,7 +339,7 @@ def main():
 
     players = []
     for i in [1]:
-        p = Process(target=exit_wrapper)
+        p = Process(target=run_one_player)
         p.start()
         time.sleep(0.5)
         players.append(p)
